@@ -17,7 +17,17 @@ public class CarController : MonoBehaviour
     public float maxTorque = 1000f;
     public float maxSteeringAngle = 45f;
     public float antiRollValue = 5000f;
-    public Rigidbody rigidBody;
+    public Rigidbody rigidBodyCar;
+    public Transform newCentreOfMass;
+
+    private float steeringMax = 0;
+
+    public void Start(){
+		Debug.Log(rigidBodyCar.centerOfMass);
+
+        rigidBodyCar.centerOfMass = newCentreOfMass.localPosition;
+
+    }
 
     public void FixedUpdate()
     {
@@ -44,7 +54,12 @@ public class CarController : MonoBehaviour
         }
     }
 
-    public void AntiRoll(WheelCollider WheelL, WheelCollider WheelR)
+    private void CalcMaxSteering()
+    {
+
+    }
+
+    private void AntiRoll(WheelCollider WheelL, WheelCollider WheelR)
     {
         WheelHit hit;
         float travelL = 1.0f;
@@ -61,14 +76,14 @@ public class CarController : MonoBehaviour
         float antiRollForce = (travelL - travelR) * antiRollValue;
 
         if (groundedL)
-            rigidBody.AddForceAtPosition(WheelL.transform.up * -antiRollForce,
+            rigidBodyCar.AddForceAtPosition(WheelL.transform.up * -antiRollForce,
                    WheelL.transform.position);
         if (groundedR)
-            rigidBody.AddForceAtPosition(WheelR.transform.up * antiRollForce,
+            rigidBodyCar.AddForceAtPosition(WheelR.transform.up * antiRollForce,
                    WheelR.transform.position);
     }
 
-    public void ApplyLocalPositionToVisuals(WheelCollider collider)
+    private void ApplyLocalPositionToVisuals(WheelCollider collider)
     {
         if (collider.transform.childCount == 0)
         {

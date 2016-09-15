@@ -13,6 +13,7 @@ public class TowerController : MonoBehaviour {
 
     public GameObject projectile;
     public Transform projectileSpawnPoint;
+    
 
 	// Use this for initialization
 	void Start () {
