@@ -5,7 +5,7 @@ public class StateMachineEnemy : MonoBehaviour {
 
     public SphereCollider radar;
 
-    [Range(0f, 360f)]
+    [Range(0f, 180f)]
     public float fieldOfView = 45f;
 
     [Range(0f, 360f)]
@@ -47,7 +47,7 @@ public class StateMachineEnemy : MonoBehaviour {
     void Update()
     {
         currentState.UpdateState();
-        Debug.Log(currentState);
+        //Debug.Log(currentState);
     }
 
     private void OnTriggerEnter(Collider other)
