@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GAMEPRODEV1_CarCombatGame.CSharp.Plugins", "GAMEPRODEV1_CarCombatGame.CSharp.Plugins.csproj", "{BC56334B-0A7C-7516-0C91-C157B7D065A7}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GAMEPRODEV1_CarCombatGame.CSharp", "GAMEPRODEV1_CarCombatGame.CSharp.csproj", "{98B4DB44-64C1-8363-29E4-9124E8E624CE}"
 EndProject
 Global
@@ -9,6 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC56334B-0A7C-7516-0C91-C157B7D065A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC56334B-0A7C-7516-0C91-C157B7D065A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC56334B-0A7C-7516-0C91-C157B7D065A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC56334B-0A7C-7516-0C91-C157B7D065A7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{98B4DB44-64C1-8363-29E4-9124E8E624CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{98B4DB44-64C1-8363-29E4-9124E8E624CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98B4DB44-64C1-8363-29E4-9124E8E624CE}.Release|Any CPU.ActiveCfg = Release|Any CPU

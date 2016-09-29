@@ -27,6 +27,9 @@ public class GameScript : MonoBehaviour {
     public GameObject[] m_gapSegments;
     public GameObject[] m_landSegments;
 
+    private GameObject[] m_usableSegmentsForGaps;
+    private GameObject[] m_usableSegmentsForLand;
+
     public Transform m_segementPocket;
     private List<GameObject[]> m_activeSegments;
 
@@ -61,6 +64,9 @@ public class GameScript : MonoBehaviour {
 
         m_activeSegments = new List<GameObject[]>();
 
+        // Build usable segment arrays
+        BuildUsableSegmentArrays();
+
     }
 	
 	// Update is called once per frame
@@ -78,11 +84,43 @@ public class GameScript : MonoBehaviour {
         Debug.DrawLine(new Vector3(-10, 0, m_previousCheckpoint), new Vector3(10, 0, m_previousCheckpoint));
     }
 
+    private void BuildUsableSegmentArrays()
+    {
+        // Building usable segments for land array
+        m_usableSegmentsForLand = new GameObject[m_landSegments.Length];
+
+        for (int i = 0; i < m_landSegments.Length; i++)
+        {
+            m_usableSegmentsForLand[i] = m_landSegments[i];
+        }
+
+        // Building usable segments for gaps array
+        m_usableSegmentsForGaps = new GameObject[m_gapSegments.Length + m_bridgeSegments.Length];
+
+        int count = 0;
+        
+        for (int i = 0; i < m_gapSegments.Length; i++)
+        {
+            m_usableSegmentsForGaps[count] = m_gapSegments[i];
+
+            count++;
+        }
+
+        for (int i = 0; i < m_bridgeSegments.Length; i++)
+        {
+            m_usableSegmentsForGaps[count] = m_bridgeSegments[i];
+        }
+
+        Debug.Log("Usable land segments: " + m_usableSegmentsForLand.Length);
+        Debug.Log("Usable gap segments: " + m_usableSegmentsForGaps.Length);
+    }
 
     IEnumerator BuildSegmentLayer()
     {
         // Temp set
         SegmentInfo.Type currentType = SegmentInfo.Type.Land;
+
+        bool isGap = false;
 
         if (m_previousSegmentLayerType == SegmentInfo.Type.Gap || m_previousSegmentLayerType == SegmentInfo.Type.None)
         {
@@ -96,9 +134,11 @@ public class GameScript : MonoBehaviour {
             {
                 case 0:
                     currentType = SegmentInfo.Type.Bridge;
+                    isGap = true;
                     break;
                 case 1:
                     currentType = SegmentInfo.Type.Gap;
+                    isGap = true;
                     break;
                 case 2:
                     currentType = SegmentInfo.Type.Land;
@@ -122,28 +162,13 @@ public class GameScript : MonoBehaviour {
         switch (currentType)
         {
             case SegmentInfo.Type.Land:
-                usableSegments = new GameObject[m_landSegments.Length];
-
-                for (int i = 0; i < m_landSegments.Length; i++)
-                {
-                    usableSegments[i] = m_landSegments[i];
-                }
+                usableSegments = m_usableSegmentsForLand;
                 break;
             case SegmentInfo.Type.Gap:
-                usableSegments = new GameObject[m_landSegments.Length];
-
-                for (int i = 0; i < m_gapSegments.Length; i++)
-                {
-                    usableSegments[i] = m_gapSegments[i];
-                }
+                usableSegments = m_usableSegmentsForGaps;
                 break;
             default:
-                usableSegments = new GameObject[m_landSegments.Length];
-
-                for (int i = 0; i < m_landSegments.Length; i++)
-                {
-                    usableSegments[i] = m_landSegments[i];
-                }
+                usableSegments = m_usableSegmentsForLand;
                 break;
         }
 
@@ -151,11 +176,58 @@ public class GameScript : MonoBehaviour {
 
         GameObject[] tempSegs = new GameObject[m_segmentLayerWidth];
 
-        for (int i = 0; i < m_segmentLayerWidth; i++)
+        if (isGap)
         {
-            tempSegs[i] = usableSegments[UnityEngine.Random.Range(0, usableSegments.Length - 1)];
+            bool hasBridge = false;
+
+            tempSegs = new GameObject[m_segmentLayerWidth];
+
+            for (int i = 0; i < m_segmentLayerWidth; i++)
+            {
+                GameObject randSeg;
+
+                // Avoids adding more bridges
+                if (hasBridge)
+                {
+                    randSeg = m_gapSegments[UnityEngine.Random.Range(0, m_gapSegments.Length - 1)];
+                }
+                // If there is no bridge yet. It will force-add a bridge at the very end
+                else if (!hasBridge && i == m_segmentLayerWidth - 1)
+                {
+                    randSeg = m_bridgeSegments[UnityEngine.Random.Range(0, m_bridgeSegments.Length - 1)];
+                }
+                // Default
+                else
+                {
+                    randSeg = usableSegments[UnityEngine.Random.Range(0, usableSegments.Length - 1)];
+                }
+
+                // Determinds if there is a bridge
+                if (randSeg.GetComponent<SegmentInfo>().type == SegmentInfo.Type.Bridge && !hasBridge)
+                {
+                    hasBridge = true;
+                }
+
+                Debug.Log(i + ": " + hasBridge);
+
+                // Adds segment to spawn
+                tempSegs[i] = randSeg;
+            }
+        }
+        else
+        {
+            tempSegs = new GameObject[m_segmentLayerWidth];
+
+            for (int i = 0; i < m_segmentLayerWidth; i++)
+            {
+                tempSegs[i] = usableSegments[UnityEngine.Random.Range(0, usableSegments.Length - 1)];
+            }
         }
 
+        
+
+        // Reverses land spawning pattern
+        #region Reverse pattern toggle
         bool reversePattern;
 
         if (m_activeSegments.Count % 2 == 0)
@@ -167,34 +239,42 @@ public class GameScript : MonoBehaviour {
             reversePattern = false;
         }
 
-        Debug.Log(reversePattern);
+        #endregion
 
         if (!reversePattern)
         {
+            // Index
+            int i = 0;
+
             for (int p = -1 * (int)(m_segmentLayerWidth * 0.5f - 0.5f); p <= (int)(m_segmentLayerWidth * 0.5f - 0.5f); p++)
             {
-                //Debug.Log(p);
-
-                int index = p + (int)(m_segmentLayerWidth * 0.5f - 0.5f);
-
+                // Create position vector
                 Vector2 newPos = new Vector2(p * 10, savedZPos);
 
-                StartCoroutine(AddSegment(tempSegs[index], newPos));
+                // Adds segment
+                StartCoroutine(AddSegment(tempSegs[i], newPos));
+
+                // Incement index
+                i++;
 
                 yield return new WaitForSeconds(m_segmentAnimationDelay);
             }
         }
         else
         {
+            // Index
+            int i = 0;
+
             for (int p = (int)(m_segmentLayerWidth * 0.5f - 0.5f); p >= -(int)(m_segmentLayerWidth * 0.5f - 0.5f); p--)
             {
-                //Debug.Log(p);
-
-                int index = p + (int)(m_segmentLayerWidth * 0.5f - 0.5f);
-
+                // Create position vector
                 Vector2 newPos = new Vector2(p * 10, savedZPos);
 
-                StartCoroutine(AddSegment(tempSegs[index], newPos));
+                // Adds segment
+                StartCoroutine(AddSegment(tempSegs[i], newPos));
+
+                // Incement index
+                i++;
 
                 yield return new WaitForSeconds(m_segmentAnimationDelay);
             }
@@ -209,8 +289,8 @@ public class GameScript : MonoBehaviour {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="s"></param>
-    /// <param name="pos"></param>
+    /// <param name="s">Segment</param>
+    /// <param name="pos">Position (X,Z)</param>
     /// <returns></returns>
     IEnumerator AddSegment(GameObject s, Vector2 pos)
     {
