@@ -32,7 +32,7 @@ public class GameScript : MonoBehaviour {
 
     // The Y position for all of the segments
     const float SEGMENT_END_HEIGHT = 0;
-    const float SEGMENT_START_HEIGHT = -100;
+    const float SEGMENT_START_HEIGHT = 100;
 
     private SegmentInfo.Type m_previousSegmentLayerType = SegmentInfo.Type.None;
     private List<string> m_previousSegmentLayerTags = new List<string>();
@@ -40,8 +40,6 @@ public class GameScript : MonoBehaviour {
     private int m_previousTotalZLength = 10;
 
     private bool m_updateLandscape = false;
-
-    public Transform test;
 
     void OnValidate()
     {
@@ -73,8 +71,7 @@ public class GameScript : MonoBehaviour {
         {
             m_previousCheckpoint += m_previousTotalZLength;
 
-            test.position = new Vector3(0, 0, m_previousCheckpoint);
-            Debug.Log("NEW LAYER");
+            //Debug.Log("NEW LAYER");
 
             StartCoroutine(BuildSegmentLayer());
         }
@@ -118,6 +115,8 @@ public class GameScript : MonoBehaviour {
             currentType = SegmentInfo.Type.Gap;
         }
 
+        m_previousSegmentLayerType = currentType;
+
         GameObject[] usableSegments;
 
         switch (currentType)
@@ -135,7 +134,7 @@ public class GameScript : MonoBehaviour {
 
                 for (int i = 0; i < m_gapSegments.Length; i++)
                 {
-                    usableSegments[i] = m_landSegments[i];
+                    usableSegments[i] = m_gapSegments[i];
                 }
                 break;
             default:
@@ -150,18 +149,60 @@ public class GameScript : MonoBehaviour {
 
         float savedZPos = m_previousCheckpoint;
 
-        for (int p = -1 * (int)(m_segmentLayerWidth * 0.5 - 0.5); p <= (int)(m_segmentLayerWidth * 0.5 - 0.5); p++)
+        GameObject[] tempSegs = new GameObject[m_segmentLayerWidth];
+
+        for (int i = 0; i < m_segmentLayerWidth; i++)
         {
-            Debug.Log(p);
-
-            GameObject randSeg = usableSegments[UnityEngine.Random.Range(0, usableSegments.Length - 1)];
-
-            Vector2 newPos = new Vector2(p * 10, savedZPos);
-
-            StartCoroutine(AddSegment(randSeg, newPos));
-
-            yield return new WaitForSeconds(m_segmentAnimationDelay);
+            tempSegs[i] = usableSegments[UnityEngine.Random.Range(0, usableSegments.Length - 1)];
         }
+
+        bool reversePattern;
+
+        if (m_activeSegments.Count % 2 == 0)
+        {
+            reversePattern = true;
+        }
+        else
+        {
+            reversePattern = false;
+        }
+
+        Debug.Log(reversePattern);
+
+        if (!reversePattern)
+        {
+            for (int p = -1 * (int)(m_segmentLayerWidth * 0.5f - 0.5f); p <= (int)(m_segmentLayerWidth * 0.5f - 0.5f); p++)
+            {
+                //Debug.Log(p);
+
+                int index = p + (int)(m_segmentLayerWidth * 0.5f - 0.5f);
+
+                Vector2 newPos = new Vector2(p * 10, savedZPos);
+
+                StartCoroutine(AddSegment(tempSegs[index], newPos));
+
+                yield return new WaitForSeconds(m_segmentAnimationDelay);
+            }
+        }
+        else
+        {
+            for (int p = (int)(m_segmentLayerWidth * 0.5f - 0.5f); p >= -(int)(m_segmentLayerWidth * 0.5f - 0.5f); p--)
+            {
+                //Debug.Log(p);
+
+                int index = p + (int)(m_segmentLayerWidth * 0.5f - 0.5f);
+
+                Vector2 newPos = new Vector2(p * 10, savedZPos);
+
+                StartCoroutine(AddSegment(tempSegs[index], newPos));
+
+                yield return new WaitForSeconds(m_segmentAnimationDelay);
+            }
+        }
+        
+
+        m_activeSegments.Add(tempSegs);
+        
         yield return null;
     }
 
