@@ -31,7 +31,7 @@ public class GameScript : MonoBehaviour {
     private GameObject[] m_usableSegmentsForLand;
 
     public Transform m_segementPocket;
-    private List<List<GameObject>> m_activeSegments;
+    private List<List<GameObject>> m_activeSegments = new List<List<GameObject>>();
 
     // The Y position for all of the segments
     const float SEGMENT_END_HEIGHT = 0;
@@ -62,8 +62,6 @@ public class GameScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-        m_activeSegments = new List<List<GameObject>>();
-
         // Build usable segment arrays
         BuildUsableSegmentArrays();
 
@@ -82,18 +80,19 @@ public class GameScript : MonoBehaviour {
             //Debug.Log("NEW LAYER");
 
             StartCoroutine(BuildSegmentLayer());
-
-            m_previousCheckpoint += m_previousTotalZLength;
-
             if (m_previousCheckpoint - ((m_segmentRenderDistance * 10) * 2) >= m_player.transform.position.z - (m_segmentRenderDistance * 10) && m_player.transform.position.z - (m_segmentRenderDistance * 10) > 50)
             {
+                //Debug.Log("DELETING OLD LAYER!");
                 StartCoroutine(RemoveSegmentLayer());
             }
+            m_previousCheckpoint += m_previousTotalZLength;
+
+            
         }
 
         Debug.DrawLine(new Vector3(-20, 0, m_player.transform.position.z - (m_segmentRenderDistance * 10)), new Vector3(20, 0, m_player.transform.position.z - (m_segmentRenderDistance * 10)), Color.red);
         Debug.DrawLine(new Vector3(-20, 0, m_previousCheckpoint - (m_segmentRenderDistance * 10) * 2), new Vector3(20, 0, m_previousCheckpoint - (m_segmentRenderDistance * 10) * 2), Color.red);
-
+        
     }
 
     private void BuildUsableSegmentArrays()
@@ -312,17 +311,22 @@ public class GameScript : MonoBehaviour {
     private IEnumerator RemoveSegmentLayer()
     {
         if (m_activeSegments.Count == 0)
-            StopCoroutine(RemoveSegmentLayer());
+            yield break;
+        //StopCoroutine(RemoveSegmentLayer());
 
-        GameObject[] tempArray = new GameObject[m_activeSegments[0].Count];
+        Debug.Log(m_activeSegments[0].Count);
 
-        for (int i = 0; i < m_activeSegments[0].Count; i++)
+        GameObject[] tempArray = m_activeSegments[0].ToArray();//new GameObject[m_activeSegments[0].Count];
+
+        /*for (int i = 0; i < m_activeSegments[0].Count; i++)
         {
             tempArray[i] = m_activeSegments[0][i];
-        }
+        }*/
 
         // Remove oldest layer from being active
         m_activeSegments.RemoveAt(0);
+
+        Debug.Log("Remove array size: " + tempArray.Length);
 
         for (int i = 0; i < tempArray.Length; i++)
         {
@@ -363,12 +367,14 @@ public class GameScript : MonoBehaviour {
             // Sets segment position
             newSegment.transform.localPosition = new Vector3(pos.x, y, pos.y);
 
-            m_activeSegments[(int)(pos.y * 0.1)].Add(newSegment);
-
             yield return null;
         }
 
         newSegment.transform.localPosition = new Vector3(pos.x, SEGMENT_END_HEIGHT, pos.y);
+
+        m_activeSegments[(int)(pos.y * 0.1)].Add(newSegment);
+        Debug.Log("Layer #: " + (int)(pos.y * 0.1) + ", Segment position: " + (int)(pos.x * 0.1));
+        Debug.Log("Layer Array Size: " + m_activeSegments[(int)(pos.y * 0.1)].Count);
 
         yield return null;
 
@@ -382,6 +388,8 @@ public class GameScript : MonoBehaviour {
     private IEnumerator RemoveSegment(GameObject s)
     {
         GameObject currentSeg = s;
+
+        Debug.Log("Segment getting removed: " + currentSeg);
 
         // For loop based on time
         for (float t = 0; t < m_segmentAnimationDuration; t += Time.deltaTime)
@@ -405,7 +413,12 @@ public class GameScript : MonoBehaviour {
     // Helper Methods
     ///////////////////////////////////////
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="value">Input value</param>
+    /// <param name="roundTo">Number to round up to</param>
+    /// <returns></returns>
     private int RoundUpTo(float value, int roundTo)
     {
         return (roundTo - (int)value % roundTo) + (int)value;
