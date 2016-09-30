@@ -16,44 +16,62 @@ public class SmoothCameraCustomInspector : Editor
 
     override public void OnInspectorGUI()
     {
-        GUILayout.BeginHorizontal();
+        EditorGUILayout.BeginHorizontal();
+        script = EditorGUILayout.ObjectField("Script", script,typeof(SmoothCamera), true) as SmoothCamera;
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
         script.target = EditorGUILayout.ObjectField("Target", script.target, typeof(Transform), true) as Transform;
-        GUILayout.EndHorizontal();
-        GUILayout.BeginHorizontal();
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        script.m_closestZoom = EditorGUILayout.FloatField("Closest Zoom", script.m_closestZoom);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
         if (!script.m_lockAtAxisY || !script.m_lockAtAxisZ)
         {
-            GUILayout.Label("Displacement", GUILayout.Width(200));
+            EditorGUILayout.PrefixLabel("Offset");
             if (!script.m_lockAtAxisY)
             {
                 GUILayout.Label("Y");
-                script.m_displacementY = EditorGUILayout.FloatField(script.m_displacementY);
+                script.m_offsetY = EditorGUILayout.FloatField(script.m_offsetY);
             }
             if (!script.m_lockAtAxisZ)
             {
                 GUILayout.Label("Z");
-                script.m_displacementZ = EditorGUILayout.FloatField(script.m_displacementZ);
+                script.m_offsetZ = EditorGUILayout.FloatField(script.m_offsetZ);
             }
         }
-        GUILayout.EndHorizontal();
-        GUILayout.BeginHorizontal();
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
         script.m_stiffness = EditorGUILayout.FloatField("Stiffness", script.m_stiffness);
-        GUILayout.EndHorizontal();
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Lock On Position Axis");
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel("Lock On Position Axis");
         m_lockOnAxis = EditorGUILayout.Toggle(m_lockOnAxis);
-        GUILayout.EndHorizontal();
+        EditorGUILayout.EndHorizontal();
+
         if (m_lockOnAxis)
         {
-            GUILayout.Space(5);
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Axis", GUILayout.Width(200));
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("Axis To Lock");
             GUILayout.Label("X");
             script.m_lockAtAxisX = EditorGUILayout.Toggle(script.m_lockAtAxisX);
             GUILayout.Label("Y");
             script.m_lockAtAxisY = EditorGUILayout.Toggle(script.m_lockAtAxisY);
             GUILayout.Label("Z");
             script.m_lockAtAxisZ = EditorGUILayout.Toggle(script.m_lockAtAxisZ);
-            GUILayout.EndHorizontal();
+            EditorGUILayout.EndHorizontal();
+        }
+        else
+        {
+            // Sets all to false when disabled
+            script.m_lockAtAxisX = false;
+            script.m_lockAtAxisY = false;
+            script.m_lockAtAxisZ = false;
         }
     }
 }

@@ -61,6 +61,12 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Common">
+      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="GAMEPRODEV1_CarCombatGame.CSharp.Plugins.csproj">
@@ -69,6 +75,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\LazyFog\Scripts\exampleSceneScript.cs" />
     <Compile Include="Assets\Scripts\Enemy\IEnemyState.cs" />
     <Compile Include="Assets\Scripts\Enemy\StateMachineEnemy.cs" />
     <Compile Include="Assets\Scripts\Enemy\States\AttackState.cs" />
@@ -79,8 +86,13 @@
     <Compile Include="Assets\Scripts\Game\SegmentInfo.cs" />
     <Compile Include="Assets\Scripts\Player\CarController.cs" />
     <Compile Include="Assets\Scripts\Utilities\EasingFunction.cs" />
+    <Compile Include="Assets\Scripts\Utilities\FollowZ.cs" />
     <Compile Include="Assets\Scripts\Utilities\SmoothCamera.cs" />
     <Compile Include="Assets\Scripts\Utilities\SmoothCameraCustomInspector.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\LazyFog\Instructions.txt" />
+    <None Include="Assets\Shaders\LazyFog.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
