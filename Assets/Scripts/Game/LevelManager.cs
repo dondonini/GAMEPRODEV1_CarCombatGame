@@ -3,18 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class GameScript : MonoBehaviour {
+public class LevelManager : MonoBehaviour {
 
+    // The player
     public Transform m_player;
 
-    [Tooltip("The animation type when the segment goes up")]
+    [Tooltip("The animation type when the segment spawns in")]
     public EasingFunction.Ease m_segmentAnimationIn;
 
-    [Tooltip("The animation type when the segment goes down")]
+    [Tooltip("The animation type when the segment is removed")]
     public EasingFunction.Ease m_segmentAnimationOut;
+
+    [Tooltip("The animation type when the enemy spawns in")]
+    public EasingFunction.Ease m_enemyAnimationIn;
+
+    [Tooltip("The animation type when the enemy is removed")]
+    public EasingFunction.Ease m_enemyAnimationOut;
 
     public float m_segmentAnimationDuration = 1;
     public float m_segmentAnimationDelay = 0.4f;
+
+    public float m_enemyAnimationDuration = 1;
+    public float m_enemyAnimationDelay = 0.4f;
 
     [Tooltip("Distance of segments to see")]
     public uint m_segmentRenderDistance = 5;
@@ -23,20 +33,42 @@ public class GameScript : MonoBehaviour {
     [SerializeField]
     private uint m_segmentLayerWidth = 3;
 
+    [Tooltip("Chance for gaps to spawn out of all segment types")]
+    public uint m_chanceForGap = 20;
+    [Tooltip("Chance for land to spawn out of all segment types")]
+    public uint m_chanceForLand = 60;
+    [Tooltip("Chance for an enemy to spawn percentage")]
+    public uint m_chanceForEnemy = 20;
+
+    // Segment gameobjects
     public GameObject[] m_bridgeSegments;
     public GameObject[] m_gapSegments;
     public GameObject[] m_landSegments;
 
+    // Enemy gameobjects
+    public GameObject[] m_enemies;
+
+    // Pre-built usable segments
     private GameObject[] m_usableSegmentsForGaps;
     private GameObject[] m_usableSegmentsForLand;
 
+    // Pockets (Will contain all of it's types)
     public Transform m_segementPocket;
+    public Transform m_enemyPocket;
+
+    // Currently used segments/enemies
     private List<List<GameObject>> m_activeSegments = new List<List<GameObject>>();
+    private List<GameObject> m_activeEnemies = new List<GameObject>();
 
     // The Y position for all of the segments
-    const float SEGMENT_END_HEIGHT = 0;
-    const float SEGMENT_START_HEIGHT = 100;
+    [SerializeField]
+    private float END_HEIGHT = 0;
+    [SerializeField]
+    private float SEGMENT_START_HEIGHT = -100;
+    [SerializeField]
+    private float ENEMY_START_HEIGHT = 100;
 
+    // Previous data
     private SegmentInfo.Type m_previousSegmentLayerType = SegmentInfo.Type.None;
     private List<string> m_previousSegmentLayerTags = new List<string>();
     private int m_previousCheckpoint = 0;
@@ -57,6 +89,11 @@ public class GameScript : MonoBehaviour {
             Debug.LogWarning("Segment Layer Width must be odd! Will fix automatically...");
             m_segmentLayerWidth += 1;
         }
+
+        if (m_chanceForEnemy > 100)
+        {
+            m_chanceForEnemy = 100;
+        }
     }
 
 	// Use this for initialization
@@ -71,24 +108,31 @@ public class GameScript : MonoBehaviour {
 	void Update () {
 
         //Debug.Log(Vector3.Distance(m_player.position, new Vector3(0, 0, 0)) / 10);
+        // Debug lines
         Debug.DrawLine(new Vector3(-20, 0, m_previousCheckpoint), new Vector3(20, 0, m_previousCheckpoint), Color.white);
         Debug.DrawLine(new Vector3(-20, 0, m_previousCheckpoint - (m_segmentRenderDistance * 10)), new Vector3(20, 0, m_previousCheckpoint - (m_segmentRenderDistance * 10)), Color.blue);
         Debug.DrawLine(new Vector3(-20, 0, m_previousCheckpoint + (m_segmentRenderDistance * 10)), new Vector3(20, 0, m_previousCheckpoint + (m_segmentRenderDistance * 10)), Color.green);
 
+        // Checks if previous checkpoint has been passed
         if (m_player.transform.position.z >= (m_previousCheckpoint - (m_segmentRenderDistance * 10)))
         {
             //Debug.Log("NEW LAYER");
-
+            // Build new layer
             StartCoroutine(BuildSegmentLayer());
-            if (m_previousCheckpoint - ((m_segmentRenderDistance * 10) * 2) >= m_player.transform.position.z - (m_segmentRenderDistance * 10) && m_player.transform.position.z - (m_segmentRenderDistance * 10) > 50)
+
+            if (m_player.transform.position.z - (m_segmentRenderDistance * 10) > 50)
             {
                 //Debug.Log("DELETING OLD LAYER!");
+                // Remove old layer
                 StartCoroutine(RemoveSegmentLayer());
             }
+
+            // Update previous checkpoint to now
             m_previousCheckpoint += m_previousTotalZLength;
 
             
         }
+
 
         Debug.DrawLine(new Vector3(-20, 0, m_player.transform.position.z - (m_segmentRenderDistance * 10)), new Vector3(20, 0, m_player.transform.position.z - (m_segmentRenderDistance * 10)), Color.red);
         Debug.DrawLine(new Vector3(-20, 0, m_previousCheckpoint - (m_segmentRenderDistance * 10) * 2), new Vector3(20, 0, m_previousCheckpoint - (m_segmentRenderDistance * 10) * 2), Color.red);
@@ -128,6 +172,8 @@ public class GameScript : MonoBehaviour {
 
     private IEnumerator BuildSegmentLayer()
     {
+        #region Local Variables
+
         // Temp set
         SegmentInfo.Type currentType = SegmentInfo.Type.Land;
 
@@ -143,6 +189,9 @@ public class GameScript : MonoBehaviour {
         // Layer type is gap
         bool isGap = false;
 
+        #endregion
+
+        #region Layer Type Selector
         // Prevents having two gap layers in a row
         if (m_previousSegmentLayerType == SegmentInfo.Type.Gap || m_previousSegmentLayerType == SegmentInfo.Type.None)
         {
@@ -151,7 +200,20 @@ public class GameScript : MonoBehaviour {
         // Selects a random layer type
         else
         {
-            int randType = UnityEngine.Random.Range(0,Enum.GetNames(typeof(SegmentInfo.Type)).Length - 1);
+            int randomNum = UnityEngine.Random.Range(0, (int)(m_chanceForGap + m_chanceForLand));
+
+            if (randomNum <= m_chanceForGap)
+            {
+                currentType = SegmentInfo.Type.Gap;
+                isGap = true;
+            }
+            else if (randomNum <= m_chanceForGap + m_chanceForLand)
+            {
+                currentType = SegmentInfo.Type.Land;
+                isGap = false;
+            }
+
+            /*int randType = UnityEngine.Random.Range(0,Enum.GetNames(typeof(SegmentInfo.Type)).Length - 1);
 
             switch (randType)
             {
@@ -169,14 +231,10 @@ public class GameScript : MonoBehaviour {
                 default:
                     currentType = SegmentInfo.Type.Land;
                     break;
-            }
+            }*/
         }
 
-        // Prevent having a whole layer of bridges. Aha...
-        if (currentType == SegmentInfo.Type.Bridge)
-        {
-            currentType = SegmentInfo.Type.Gap;
-        }
+        #endregion
 
         // Sets current type selected to be previous for next run through
         m_previousSegmentLayerType = currentType;
@@ -244,8 +302,6 @@ public class GameScript : MonoBehaviour {
             }
         }
 
-        
-
         // Reverses land spawning pattern
         #region Reverse pattern toggle
         bool reversePattern;
@@ -262,6 +318,7 @@ public class GameScript : MonoBehaviour {
         #endregion
 
         // Spawns segments into world
+        #region Segment Spawning
         if (!reversePattern)
         {
             // Index
@@ -274,6 +331,10 @@ public class GameScript : MonoBehaviour {
 
                 // Adds segment
                 StartCoroutine(AddSegment(tempSegs[i], newPos));
+
+                // Adds enemy
+                if (currentType == SegmentInfo.Type.Land)
+                    SetupAndSpawnEnemy(new Vector3(p * 10, END_HEIGHT, savedZPos));
 
                 // Incement index
                 i++;
@@ -294,18 +355,68 @@ public class GameScript : MonoBehaviour {
                 // Adds segment
                 StartCoroutine(AddSegment(tempSegs[i], newPos));
 
-                // Incement index
+                // Adds enemy
+                if (currentType == SegmentInfo.Type.Land)
+                    SetupAndSpawnEnemy(new Vector3(p * 10, END_HEIGHT, savedZPos));
+
+                // Increment index
                 i++;
 
                 yield return new WaitForSeconds(m_segmentAnimationDelay);
             }
         }
 
+        #endregion
+
         yield return null;
     }
 
+    private void SetupAndSpawnEnemy(Vector3 p)
+    {
+        // Generate random number between 0 and 100
+        int randomNum = UnityEngine.Random.Range(0, 100);
+
+        // Checks if random number is lower than m_changeForEnemy number
+        if (randomNum <= m_chanceForEnemy)
+        {
+
+
+            int randomCorner = UnityEngine.Random.Range(0, 3);
+
+            Vector3 enemyOffset;
+
+            switch (randomCorner)
+            {
+                // Farthest Left
+                case (0):
+                    enemyOffset = new Vector3(-4, 0, 4);
+                    break;
+                // Farthest Right
+                case (1):
+                    enemyOffset = new Vector3(4, 0, 4);
+                    break;
+                // Closest Left
+                case (2):
+                    enemyOffset = new Vector3(-4, 0, -4);
+                    break;
+                // Closest Right
+                case (3):
+                    enemyOffset = new Vector3(4, 0, -4);
+                    break;
+                // Default
+                default:
+                    enemyOffset = new Vector3(0, 0, 0);
+                    break;
+            }
+
+            Vector3 finalEnemyPosition = p + enemyOffset;
+
+            StartCoroutine(AddEnemy(m_enemies[0], finalEnemyPosition));
+        }
+    }
+
     /// <summary>
-    /// 
+    /// Removes previous layer
     /// </summary>
     /// <returns></returns>
     private IEnumerator RemoveSegmentLayer()
@@ -339,7 +450,7 @@ public class GameScript : MonoBehaviour {
     }
 
     /// <summary>
-    /// 
+    /// Spawns segment into world
     /// </summary>
     /// <param name="s">Segment</param>
     /// <param name="pos">Position (X,Z)</param>
@@ -362,7 +473,7 @@ public class GameScript : MonoBehaviour {
         for (float t = 0; t < m_segmentAnimationDuration; t += Time.deltaTime)
         {
             // Calculate Y pos using Penner Easing
-            float y = EasingFunction.GetEasingFunction(m_segmentAnimationIn)(SEGMENT_START_HEIGHT, SEGMENT_END_HEIGHT, t / m_segmentAnimationDuration);
+            float y = EasingFunction.GetEasingFunction(m_segmentAnimationIn)(SEGMENT_START_HEIGHT, END_HEIGHT, t / m_segmentAnimationDuration);
 
             // Sets segment position
             newSegment.transform.localPosition = new Vector3(pos.x, y, pos.y);
@@ -370,7 +481,7 @@ public class GameScript : MonoBehaviour {
             yield return null;
         }
 
-        newSegment.transform.localPosition = new Vector3(pos.x, SEGMENT_END_HEIGHT, pos.y);
+        newSegment.transform.localPosition = new Vector3(pos.x, END_HEIGHT, pos.y);
 
         m_activeSegments[(int)(pos.y * 0.1)].Add(newSegment);
         Debug.Log("Layer #: " + (int)(pos.y * 0.1) + ", Segment position: " + (int)(pos.x * 0.1));
@@ -381,7 +492,7 @@ public class GameScript : MonoBehaviour {
     }
 
     /// <summary>
-    /// 
+    /// Removes given segment
     /// </summary>
     /// <param name="s">Segment</param>
     /// <returns></returns>
@@ -395,7 +506,7 @@ public class GameScript : MonoBehaviour {
         for (float t = 0; t < m_segmentAnimationDuration; t += Time.deltaTime)
         {
             // Calculate Y pos using Penner Easing
-            float y = EasingFunction.GetEasingFunction(m_segmentAnimationOut)(SEGMENT_END_HEIGHT, SEGMENT_START_HEIGHT, t / m_segmentAnimationDuration);
+            float y = EasingFunction.GetEasingFunction(m_segmentAnimationOut)(END_HEIGHT, SEGMENT_START_HEIGHT, t / m_segmentAnimationDuration);
 
             // Sets segment position
             currentSeg.transform.localPosition = new Vector3(currentSeg.transform.localPosition.x, y, currentSeg.transform.localPosition.z);
@@ -405,6 +516,44 @@ public class GameScript : MonoBehaviour {
 
         // Destroys segment
         Destroy(currentSeg);
+
+        yield return null;
+    }
+
+    /// <summary>
+    /// Spawns enemy to world
+    /// </summary>
+    /// <param name="e">Enemy</param>
+    /// <param name="pos">Position (X,Z)</param>
+    /// <returns></returns>
+    private IEnumerator AddEnemy(GameObject e, Vector2 pos)
+    {
+        // Cloning enemy
+        GameObject newEnemy = Instantiate(e) as GameObject;
+
+        // Sets enemy STARTER position
+        newEnemy.transform.localPosition = new Vector3(pos.x, ENEMY_START_HEIGHT, pos.y);
+
+        // Puts segment into segment pocket
+        newEnemy.transform.SetParent(m_segementPocket);
+
+        // For loop based on time
+        for (float t = 0; t < m_segmentAnimationDuration; t += Time.deltaTime)
+        {
+            // Calculate Y pos using Penner Easing
+            float y = EasingFunction.GetEasingFunction(m_enemyAnimationIn)(ENEMY_START_HEIGHT, END_HEIGHT, t / m_segmentAnimationDuration);
+
+            // Sets segment position
+            newEnemy.transform.localPosition = new Vector3(pos.x, y, pos.y);
+
+            yield return null;
+        }
+
+        // Sets enemy position to final position
+        newEnemy.transform.localPosition = new Vector3(pos.x, END_HEIGHT, pos.y);
+
+        // Adding enemy to active list
+        m_activeEnemies.Add(newEnemy);
 
         yield return null;
     }
