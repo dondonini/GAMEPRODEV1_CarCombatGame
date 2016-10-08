@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.4.1f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -84,17 +82,38 @@
     <Compile Include="Assets\Scripts\Enemy\States\ChaseState.cs" />
     <Compile Include="Assets\Scripts\Enemy\States\PatrolState.cs" />
     <Compile Include="Assets\Scripts\Enemy\TowerController.cs" />
+    <Compile Include="Assets\Scripts\Game\GapSegmentWalls.cs" />
+    <Compile Include="Assets\Scripts\Game\LandSegmentRandomBottom.cs" />
     <Compile Include="Assets\Scripts\Game\LevelManager.cs" />
+    <Compile Include="Assets\Scripts\Game\Levels\Level1Data.cs" />
     <Compile Include="Assets\Scripts\Game\SegmentInfo.cs" />
     <Compile Include="Assets\Scripts\Player\CarController.cs" />
     <Compile Include="Assets\Scripts\Utilities\EasingFunction.cs" />
+    <Compile Include="Assets\Scripts\Utilities\ExtensionMethods.cs" />
     <Compile Include="Assets\Scripts\Utilities\FollowZ.cs" />
+    <Compile Include="Assets\Scripts\Utilities\GameObject2DArray.cs" />
+    <Compile Include="Assets\Scripts\Utilities\Int2DArray.cs" />
+    <Compile Include="Assets\Scripts\Utilities\MapBuilder\MapBuildCustomInspector.cs" />
+    <Compile Include="Assets\Scripts\Utilities\MapBuilder\MapBuildScript.cs" />
+    <Compile Include="Assets\Scripts\Utilities\ReadOnlyAttribute.cs" />
+    <Compile Include="Assets\Scripts\Utilities\SegmentAutoAlign.cs" />
     <Compile Include="Assets\Scripts\Utilities\SmoothCamera.cs" />
     <Compile Include="Assets\Scripts\Utilities\SmoothCameraCustomInspector.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\LazyFog.shader" />
     <None Include="Assets\LazyFog\Instructions.txt" />
-    <None Include="Assets\Shaders\LazyFog.shader" />
+    <None Include="Assets\Standard Assets\Effects\AmbientOcclusion\Resources\AmbientOcclusion.cginc" />
+    <None Include="Assets\Standard Assets\Effects\AmbientOcclusion\Resources\AmbientOcclusion.shader" />
+    <None Include="Assets\Standard Assets\Effects\AntiAliasing\FXAA\Resources\FXAA.shader" />
+    <None Include="Assets\Standard Assets\Effects\AntiAliasing\FXAA\Resources\FXAA3.cginc" />
+    <None Include="Assets\Standard Assets\Effects\AntiAliasing\SMAA\Resources\SMAA.cginc" />
+    <None Include="Assets\Standard Assets\Effects\AntiAliasing\SMAA\Resources\SMAA.shader" />
+    <None Include="Assets\Standard Assets\Effects\Bloom\Resources\Bloom.cginc" />
+    <None Include="Assets\Standard Assets\Effects\Bloom\Resources\Bloom.shader" />
+    <None Include="Assets\Standard Assets\Effects\LensAberrations\Resources\LensAberrations.shader" />
+    <None Include="Assets\Standard Assets\Effects\ScreenSpaceReflection\Resources\ScreenSpaceRaytrace.cginc" />
+    <None Include="Assets\Standard Assets\Effects\ScreenSpaceReflection\Resources\ScreenSpaceReflection.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

@@ -8,7 +8,8 @@ public class SegmentInfo : MonoBehaviour {
         None,
         Bridge,
         Gap,
-        Land
+        Land,
+        Checkpoint
     };
 
     // # segments it takes on X axis

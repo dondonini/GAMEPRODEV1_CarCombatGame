@@ -69,11 +69,34 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Standard Assets\Utility\SmoothFollow.cs" />
+    <Compile Include="Assets\Standard Assets\Effects\AmbientOcclusion\AmbientOcclusion.cs" />
+    <Compile Include="Assets\Standard Assets\Effects\AmbientOcclusion\Helpers\PropertyObserver.cs" />
+    <Compile Include="Assets\Standard Assets\Effects\AmbientOcclusion\Helpers\Settings.cs" />
+    <Compile Include="Assets\Standard Assets\Effects\AntiAliasing\AntiAliasing.cs" />
+    <Compile Include="Assets\Standard Assets\Effects\AntiAliasing\FXAA\FXAA.cs" />
+    <Compile Include="Assets\Standard Assets\Effects\AntiAliasing\IAntiAliasing.cs" />
+    <Compile Include="Assets\Standard Assets\Effects\AntiAliasing\SMAA\SMAA.cs" />
+    <Compile Include="Assets\Standard Assets\Effects\Bloom\Bloom.cs" />
+    <Compile Include="Assets\Standard Assets\Effects\Common\ImageEffectHelper.cs" />
+    <Compile Include="Assets\Standard Assets\Effects\Common\MinAttribute.cs" />
+    <Compile Include="Assets\Standard Assets\Effects\Common\RenderTextureUtility.cs" />
+    <Compile Include="Assets\Standard Assets\Effects\LensAberrations\LensAberrations.cs" />
+    <Compile Include="Assets\Standard Assets\Effects\ScreenSpaceReflection\ScreenSpaceReflection.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\LazyFog.shader" />
     <None Include="Assets\LazyFog\Instructions.txt" />
-    <None Include="Assets\Shaders\LazyFog.shader" />
+    <None Include="Assets\Standard Assets\Effects\AmbientOcclusion\Resources\AmbientOcclusion.cginc" />
+    <None Include="Assets\Standard Assets\Effects\AmbientOcclusion\Resources\AmbientOcclusion.shader" />
+    <None Include="Assets\Standard Assets\Effects\AntiAliasing\FXAA\Resources\FXAA.shader" />
+    <None Include="Assets\Standard Assets\Effects\AntiAliasing\FXAA\Resources\FXAA3.cginc" />
+    <None Include="Assets\Standard Assets\Effects\AntiAliasing\SMAA\Resources\SMAA.cginc" />
+    <None Include="Assets\Standard Assets\Effects\AntiAliasing\SMAA\Resources\SMAA.shader" />
+    <None Include="Assets\Standard Assets\Effects\Bloom\Resources\Bloom.cginc" />
+    <None Include="Assets\Standard Assets\Effects\Bloom\Resources\Bloom.shader" />
+    <None Include="Assets\Standard Assets\Effects\LensAberrations\Resources\LensAberrations.shader" />
+    <None Include="Assets\Standard Assets\Effects\ScreenSpaceReflection\Resources\ScreenSpaceRaytrace.cginc" />
+    <None Include="Assets\Standard Assets\Effects\ScreenSpaceReflection\Resources\ScreenSpaceReflection.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
