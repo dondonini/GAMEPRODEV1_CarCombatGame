@@ -82,6 +82,7 @@
     <Compile Include="Assets\Scripts\Enemy\States\ChaseState.cs" />
     <Compile Include="Assets\Scripts\Enemy\States\PatrolState.cs" />
     <Compile Include="Assets\Scripts\Enemy\TowerController.cs" />
+    <Compile Include="Assets\Scripts\Game\BreakableFloor.cs" />
     <Compile Include="Assets\Scripts\Game\GapSegmentWalls.cs" />
     <Compile Include="Assets\Scripts\Game\LandSegmentRandomBottom.cs" />
     <Compile Include="Assets\Scripts\Game\LevelManager.cs" />
