@@ -61,12 +61,6 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
-      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Common">
-      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="GAMEPRODEV1_CarCombatGame.CSharp.Plugins.csproj">
@@ -89,14 +83,17 @@
     <Compile Include="Assets\Scripts\Game\Levels\Level1Data.cs" />
     <Compile Include="Assets\Scripts\Game\SegmentInfo.cs" />
     <Compile Include="Assets\Scripts\Player\CarController.cs" />
+    <Compile Include="Assets\Scripts\Utilities\AutoFollow.cs" />
     <Compile Include="Assets\Scripts\Utilities\EasingFunction.cs" />
     <Compile Include="Assets\Scripts\Utilities\ExtensionMethods.cs" />
     <Compile Include="Assets\Scripts\Utilities\FollowZ.cs" />
     <Compile Include="Assets\Scripts\Utilities\GameObject2DArray.cs" />
     <Compile Include="Assets\Scripts\Utilities\Int2DArray.cs" />
+    <Compile Include="Assets\Scripts\Utilities\MainMenu\MainMenuAnimationLoop.cs" />
     <Compile Include="Assets\Scripts\Utilities\MapBuilder\MapBuildCustomInspector.cs" />
     <Compile Include="Assets\Scripts\Utilities\MapBuilder\MapBuildScript.cs" />
     <Compile Include="Assets\Scripts\Utilities\ReadOnlyAttribute.cs" />
+    <Compile Include="Assets\Scripts\Utilities\RotationScript.cs" />
     <Compile Include="Assets\Scripts\Utilities\SegmentAutoAlign.cs" />
     <Compile Include="Assets\Scripts\Utilities\SmoothCamera.cs" />
     <Compile Include="Assets\Scripts\Utilities\SmoothCameraCustomInspector.cs" />
