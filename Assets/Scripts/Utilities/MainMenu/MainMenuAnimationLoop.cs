@@ -33,14 +33,20 @@ public class MainMenuAnimationLoop : MonoBehaviour {
             if (m_previousMap != randMap)
             {
                 m_previousMap = randMap;
-                Debug.Log((m_segmentAnimationDuration * m_miniMaps[randMap].transform.childCount) - (m_segmentAnimationDelay * m_miniMaps[randMap].transform.childCount));
+                //Debug.Log((m_segmentAnimationDuration * m_miniMaps[randMap].transform.childCount));
+
+                // Segment exit final position
 
                 for (int s = 0; s < m_miniMaps[randMap].transform.childCount; s++)
                 {
                     m_miniMaps[randMap].transform.GetChild(s).position = new Vector3(m_miniMaps[randMap].transform.GetChild(s).position.x, SEGMENT_START_HEIGHT, m_miniMaps[randMap].transform.GetChild(s).position.z);
                 }
 
+                // Load new segments
+
                 m_miniMaps[randMap].SetActive(true);
+
+                // Segment enter
 
                 for (int s = 0; s < m_miniMaps[randMap].transform.childCount; s++)
                 {
@@ -54,6 +60,8 @@ public class MainMenuAnimationLoop : MonoBehaviour {
 
                 yield return new WaitForSeconds(m_waitTillNextMap);
 
+                // Segment exit
+
                 for (int s = 0; s < m_miniMaps[randMap].transform.childCount; s++)
                 {
 
@@ -62,8 +70,7 @@ public class MainMenuAnimationLoop : MonoBehaviour {
                     yield return new WaitForSeconds(m_segmentAnimationDelay);
                 }
 
-                yield return new WaitForSeconds(m_segmentAnimationDelay * m_miniMaps[randMap].transform.childCount);
-                
+                yield return new WaitForSeconds(m_segmentAnimationDelay * m_miniMaps[randMap].transform.childCount + m_segmentAnimationDuration);
 
                 m_miniMaps[randMap].SetActive(false);
 
@@ -82,7 +89,7 @@ public class MainMenuAnimationLoop : MonoBehaviour {
         // Sets segment STARTER position
         currentSegment.transform.position = new Vector3(
             currentSegment.transform.position.x,   // X
-            SEGMENT_START_HEIGHT,                       // Y
+            -SEGMENT_START_HEIGHT,                       // Y
             currentSegment.transform.position.z);  // Z
 
         // For loop based on time
@@ -90,7 +97,7 @@ public class MainMenuAnimationLoop : MonoBehaviour {
         {
             // Calculate Y pos using Penner Easing
             float y = EasingFunction.GetEasingFunction(m_segmentAnimationIn)
-                (SEGMENT_START_HEIGHT, END_HEIGHT, t / m_segmentAnimationDuration
+                (-SEGMENT_START_HEIGHT, END_HEIGHT, t / m_segmentAnimationDuration
             );
 
             // Sets segment position
@@ -128,7 +135,7 @@ public class MainMenuAnimationLoop : MonoBehaviour {
         {
             // Calculate Y pos using Penner Easing
             float y = EasingFunction.GetEasingFunction(m_segmentAnimationOut)
-                (END_HEIGHT, SEGMENT_START_HEIGHT, t / m_segmentAnimationDuration
+                (END_HEIGHT, -SEGMENT_START_HEIGHT, t / m_segmentAnimationDuration
             );
 
             // Sets segment position
@@ -143,7 +150,7 @@ public class MainMenuAnimationLoop : MonoBehaviour {
 
         currentSegment.transform.position = new Vector3(
             currentSegment.transform.position.x,   // X
-            SEGMENT_START_HEIGHT,                                 // Y
+            -SEGMENT_START_HEIGHT,                                 // Y
             currentSegment.transform.position.z    // Z
         );
 

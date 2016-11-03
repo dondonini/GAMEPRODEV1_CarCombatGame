@@ -10,6 +10,8 @@ public class SmoothCamera : MonoBehaviour {
     public float m_offsetZ = -40.0f;
     public float m_stiffness = 100;
     public float m_closestZoom = 10;
+    [Range(1.0f,100.0f)]
+    public float m_zoomSpeedPercentage;
     public bool m_lockAtAxisX;
     public bool m_lockAtAxisY;
     public bool m_lockAtAxisZ;
@@ -48,6 +50,10 @@ public class SmoothCamera : MonoBehaviour {
 
             m_lowestZ = m_offsetZ * subtractionPercentage;
         }
+
+        // Limiting zoom speed percentage
+
+        m_zoomSpeedPercentage = Mathf.Clamp(m_zoomSpeedPercentage, 1.0f, 100.0f);
     }
 
     void Start()
@@ -60,6 +66,28 @@ public class SmoothCamera : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
+    }
+
+    void FixedUpdate()
+    {
+        // Zoom
+
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+
+        if (scroll > 0.0f)
+        {
+            // Zoom in
+
+            m_zoomPercentage -= (m_zoomSpeedPercentage / 100.0f);
+            m_zoomPercentage = Mathf.Clamp01(m_zoomPercentage);
+        }
+        else if (scroll < 0.0f)
+        {
+            // Zoom out
+
+            m_zoomPercentage += (m_zoomSpeedPercentage / 100.0f);
+            m_zoomPercentage = Mathf.Clamp01(m_zoomPercentage);
+        }
     }
 
     void LateUpdate()
