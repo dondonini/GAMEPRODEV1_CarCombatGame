@@ -15,12 +15,14 @@ public class CarController : MonoBehaviour
 
     public List<AxleInfo> axleList;
     public float maxTorque = 1000f;
+    public float maxSpeed = 100f;
+    public float maxBrake = 50f;
     public float maxSteeringAngle = 45f;
     public float antiRollValue = 5000f;
     public Rigidbody rigidBodyCar;
     public Transform newCentreOfMass;
 
-    private float steeringMax = 0;
+    private float steerFactor = 0;
 
     public void Start(){
 		Debug.Log(rigidBodyCar.centerOfMass);
@@ -33,13 +35,17 @@ public class CarController : MonoBehaviour
     {
         float motor = maxTorque * Input.GetAxis("Vertical");
         float steering = maxSteeringAngle * Input.GetAxis("Horizontal");
+        float brake = maxBrake * (1 - Mathf.Abs(Input.GetAxis("Vertical")));
+        float currentSpeed = rigidBodyCar.velocity.magnitude;
+
+        steerFactor = rigidBodyCar.velocity.magnitude * 3.6f / maxSpeed;
 
         foreach (AxleInfo axleInfo in axleList)
         {
             if (axleInfo.steering)
             {
-                axleInfo.leftWheel.steerAngle = steering;
-                axleInfo.rightWheel.steerAngle = steering;
+                axleInfo.leftWheel.steerAngle = steering * steerFactor;
+                axleInfo.rightWheel.steerAngle = steering * steerFactor;
             }
             if (axleInfo.drive)
             {
@@ -47,16 +53,14 @@ public class CarController : MonoBehaviour
                 axleInfo.rightWheel.motorTorque = motor;
             }
 
+            axleInfo.leftWheel.brakeTorque = brake;
+            axleInfo.rightWheel.brakeTorque = brake;
+
             AntiRoll(axleInfo.leftWheel, axleInfo.rightWheel);
 
             ApplyLocalPositionToVisuals(axleInfo.leftWheel);
             ApplyLocalPositionToVisuals(axleInfo.rightWheel);
         }
-    }
-
-    private void CalcMaxSteering()
-    {
-
     }
 
     private void AntiRoll(WheelCollider WheelL, WheelCollider WheelR)

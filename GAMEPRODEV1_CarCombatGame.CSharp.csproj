@@ -70,19 +70,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\LazyFog\Scripts\exampleSceneScript.cs" />
-    <Compile Include="Assets\Scripts\Enemy\IEnemyState.cs" />
-    <Compile Include="Assets\Scripts\Enemy\StateMachineEnemy.cs" />
-    <Compile Include="Assets\Scripts\Enemy\States\AttackState.cs" />
-    <Compile Include="Assets\Scripts\Enemy\States\ChaseState.cs" />
-    <Compile Include="Assets\Scripts\Enemy\States\PatrolState.cs" />
-    <Compile Include="Assets\Scripts\Enemy\TowerController.cs" />
+    <Compile Include="Assets\Scripts\Enemy\EnemyStates_SM.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Samples\IEnemyState.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Samples\StateMachineEnemy.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Samples\States\AttackState.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Samples\States\ChaseState.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Samples\States\PatrolState.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Samples\TowerController.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Turret1\States\T1_AttackState.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Turret1\States\T1_ChaseState.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Turret1\States\T1_PatrolState.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Turret1\States\T1_WanderState.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Turret1\Turret1_SM.cs" />
     <Compile Include="Assets\Scripts\Game\BreakableFloor.cs" />
     <Compile Include="Assets\Scripts\Game\GapSegmentWalls.cs" />
     <Compile Include="Assets\Scripts\Game\LandSegmentRandomBottom.cs" />
     <Compile Include="Assets\Scripts\Game\LevelManager.cs" />
     <Compile Include="Assets\Scripts\Game\Levels\Level1Data.cs" />
     <Compile Include="Assets\Scripts\Game\SegmentInfo.cs" />
+    <Compile Include="Assets\Scripts\Player\AimPlane.cs" />
     <Compile Include="Assets\Scripts\Player\CarController.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Utilities\AutoFollow.cs" />
     <Compile Include="Assets\Scripts\Utilities\EasingFunction.cs" />
     <Compile Include="Assets\Scripts\Utilities\ExtensionMethods.cs" />
