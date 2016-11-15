@@ -8,4 +8,9 @@ public class LevelLoader : MonoBehaviour {
     {
         SceneManager.LoadSceneAsync(level);
     }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }

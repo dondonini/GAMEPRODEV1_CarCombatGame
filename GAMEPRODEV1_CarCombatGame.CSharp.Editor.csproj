@@ -111,6 +111,8 @@
     <Compile Include="Assets\Editor\FXAAEditor.cs" />
     <Compile Include="Assets\Editor\IAntiAliasingEditor.cs" />
     <Compile Include="Assets\Editor\LensAberrationsEditor.cs" />
+    <Compile Include="Assets\Editor\MapBuilder\MapBuildCustomInspector.cs" />
+    <Compile Include="Assets\Editor\MapBuilder\MapBuildScript.cs" />
     <Compile Include="Assets\Editor\ReadOnlyDrawer.cs" />
     <Compile Include="Assets\Editor\SMAAEditor.cs" />
   </ItemGroup>

@@ -8,14 +8,11 @@ public class AimPlane : MonoBehaviour {
 
     private Vector3 offset = Vector3.zero;
 
-    void Start()
-    {
-        offset = new Vector3(0, yOffset, 0);
-    }
-
 	// Update is called once per frame
 	void Update () {
-	
+
+        offset = new Vector3(0, yOffset, 0);
+
         if (playerPos)
         {
             transform.position = playerPos.position + offset;

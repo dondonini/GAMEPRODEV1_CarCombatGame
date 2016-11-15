@@ -128,7 +128,7 @@ public class T1_WanderState : EnemyStates_SM {
         }
         else
         {
-            if (Vector3.Angle(playerDirection, enemy.barrel.transform.position) < enemy.fieldOfViewRange)
+            if (Vector3.Angle(playerDirection, enemy.barrel.transform.forward) < enemy.fieldOfViewRange)
             {
                 return true;
             }

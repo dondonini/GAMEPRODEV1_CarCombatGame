@@ -71,12 +71,6 @@
   <ItemGroup>
     <Compile Include="Assets\LazyFog\Scripts\exampleSceneScript.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyStates_SM.cs" />
-    <Compile Include="Assets\Scripts\Enemy\Samples\IEnemyState.cs" />
-    <Compile Include="Assets\Scripts\Enemy\Samples\StateMachineEnemy.cs" />
-    <Compile Include="Assets\Scripts\Enemy\Samples\States\AttackState.cs" />
-    <Compile Include="Assets\Scripts\Enemy\Samples\States\ChaseState.cs" />
-    <Compile Include="Assets\Scripts\Enemy\Samples\States\PatrolState.cs" />
-    <Compile Include="Assets\Scripts\Enemy\Samples\TowerController.cs" />
     <Compile Include="Assets\Scripts\Enemy\Turret1\States\T1_AttackState.cs" />
     <Compile Include="Assets\Scripts\Enemy\Turret1\States\T1_ChaseState.cs" />
     <Compile Include="Assets\Scripts\Enemy\Turret1\States\T1_PatrolState.cs" />
@@ -91,6 +85,7 @@
     <Compile Include="Assets\Scripts\Player\AimPlane.cs" />
     <Compile Include="Assets\Scripts\Player\CarController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Player\ProjectileFunction.cs" />
     <Compile Include="Assets\Scripts\Utilities\AutoFollow.cs" />
     <Compile Include="Assets\Scripts\Utilities\EasingFunction.cs" />
     <Compile Include="Assets\Scripts\Utilities\ExtensionMethods.cs" />
@@ -99,8 +94,8 @@
     <Compile Include="Assets\Scripts\Utilities\Int2DArray.cs" />
     <Compile Include="Assets\Scripts\Utilities\MainMenu\LevelLoader.cs" />
     <Compile Include="Assets\Scripts\Utilities\MainMenu\MainMenuAnimationLoop.cs" />
-    <Compile Include="Assets\Scripts\Utilities\MapBuilder\MapBuildCustomInspector.cs" />
-    <Compile Include="Assets\Scripts\Utilities\MapBuilder\MapBuildScript.cs" />
+    <Compile Include="Assets\Scripts\Utilities\MainMenu\MenuFunction.cs" />
+    <Compile Include="Assets\Scripts\Utilities\OnTriggerSends_T1.cs" />
     <Compile Include="Assets\Scripts\Utilities\ReadOnlyAttribute.cs" />
     <Compile Include="Assets\Scripts\Utilities\RotationScript.cs" />
     <Compile Include="Assets\Scripts\Utilities\SegmentAutoAlign.cs" />

@@ -44,8 +44,8 @@ public class CarController : MonoBehaviour
         {
             if (axleInfo.steering)
             {
-                axleInfo.leftWheel.steerAngle = steering * steerFactor;
-                axleInfo.rightWheel.steerAngle = steering * steerFactor;
+                axleInfo.leftWheel.steerAngle = steering;// * steerFactor;
+                axleInfo.rightWheel.steerAngle = steering;// * steerFactor;
             }
             if (axleInfo.drive)
             {

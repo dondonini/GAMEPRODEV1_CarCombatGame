@@ -41,6 +41,7 @@ public class T1_PatrolState : EnemyStates_SM {
         if (other.gameObject.CompareTag("Player"))
         {
             playerInArea = null;
+            Debug.Log("Player left");
         }
     }
 
@@ -103,7 +104,9 @@ public class T1_PatrolState : EnemyStates_SM {
     {
         Vector3 playerDirection = playerInArea.position - enemy.barrel.transform.position;
 
-        if (Vector3.Angle(playerDirection, enemy.barrel.transform.position) < enemy.fieldOfViewRange)
+        Debug.Log("Angle to player: " + Vector3.Angle(playerDirection, enemy.barrel.transform.forward));
+
+        if (Vector3.Angle(playerDirection, enemy.barrel.transform.forward) < enemy.fieldOfViewRange)
         {
             return true;
         }

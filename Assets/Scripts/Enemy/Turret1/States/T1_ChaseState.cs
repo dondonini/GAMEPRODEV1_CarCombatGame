@@ -67,19 +67,28 @@ public class T1_ChaseState : EnemyStates_SM {
     {
         if (CanSeePlayer())
         {
+            // Turn towards player
+            Quaternion lookAtRotation = Quaternion.LookRotation(enemy.chaseTarget.position - enemy.barrel.transform.position);
+            enemy.barrel.gameObject.transform.rotation = Quaternion.Slerp(enemy.barrel.gameObject.transform.rotation, lookAtRotation, Time.deltaTime * (enemy.chaseTurnSpeed * Time.deltaTime));
+
             RaycastHit hit;
 
-            if (Physics.Raycast(enemy.projectileSpawnLocation.transform.position, Vector3.up, out hit, enemy.radarArea.radius)) 
+            Debug.DrawRay(enemy.projectileSpawnLocation.position, enemy.projectileSpawnLocation.up * enemy.radarArea.radius, Color.cyan);
+
+            //if (Physics.Raycast(enemy.projectileSpawnLocation.position, Vector3.forward, out hit, enemy.radarArea.radius))
+            if (Physics.SphereCast(enemy.projectileSpawnLocation.position, 1, enemy.projectileSpawnLocation.up, out hit, enemy.radarArea.radius))
             {
                 if (hit.collider.CompareTag("Player"))
                 {
+                    Debug.DrawRay(enemy.projectileSpawnLocation.position, enemy.projectileSpawnLocation.up * Vector3.Distance(enemy.projectileSpawnLocation.position, hit.point), Color.red);
                     ToAttackState();
                 }
             }
         }
         else
         {
-            ToWanderState();
+            //ToWanderState();
+            ToPatrolState();
         }
     }
 
@@ -89,7 +98,7 @@ public class T1_ChaseState : EnemyStates_SM {
     /// <returns></returns>
     private bool CanSeePlayer()
     {
-        Vector3 playerPosition = enemy.chaseTarget.transform.position;
+        Vector3 playerPosition = enemy.chaseTarget.position;
         Vector3 playerDirection = playerPosition - enemy.barrel.transform.position;
 
         if (Vector3.Distance(playerPosition, enemy.barrel.transform.position) > enemy.radarArea.radius)
@@ -98,7 +107,7 @@ public class T1_ChaseState : EnemyStates_SM {
         }
         else
         {
-            if (Vector3.Angle(playerDirection, enemy.barrel.transform.position) < enemy.fieldOfViewRange)
+            if (Vector3.Angle(playerDirection, enemy.barrel.transform.forward) < enemy.fieldOfViewRange)
             {
                 return true;
             }
